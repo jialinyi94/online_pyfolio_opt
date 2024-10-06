@@ -16,13 +16,11 @@ sudo apt-get update
 sudo apt-get -y install cuda-toolkit-12-2
 ```
 
+check the exact include and lib folders that `/user/local/cuda` is linking
+
+
 - cudnn==9.4.0
 
-install from [for WSL-ubuntu (22.04 LTS)](https://developer.nvidia.com/cudnn-downloads?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=22.04&target_type=deb_network)
+install from [for WSL-ubuntu (22.04 LTS)](https://developer.download.nvidia.com/compute/cudnn/redist/cudnn/)
 
-```
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
-sudo dpkg -i cuda-keyring_1.1-1_all.deb
-sudo apt-get update
-sudo apt-get -y install cudnn-cuda-12
-```
+unzip the file and copy the header files in `include` and `lib` to the include and lib folders.
