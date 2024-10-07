@@ -2,5 +2,8 @@ import chex
 import jax.numpy as jnp
 
 
-def neg_logdot_loss(relative_prices: chex.Array, portfolio: chex.Array):
-    return -jnp.log(jnp.dot(relative_prices, portfolio))
+def neg_logdot_loss(
+    params: chex.Array,
+    relative_prices: chex.Array
+):
+    return -jnp.log(jnp.dot(params, relative_prices))
