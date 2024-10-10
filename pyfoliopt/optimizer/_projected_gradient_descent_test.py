@@ -1,8 +1,8 @@
-import jax
-import optax
 from pyfoliopt.optimizer import proj_gd
+from pyfoliopt.projection import projection_l1_ball
 
 import jax.numpy as jnp
+import chex
 
 
 def test_proj_gd():
@@ -32,4 +32,4 @@ def test_proj_gd():
     expected_params_proj = jnp.clip(expected_params, 0, 1)
     expected_transformed_updates = expected_params_proj - expected_params
 
-    assert jnp.allclose(transformed_updates, expected_transformed_updates)
+    chex.assert_trees_all_close(transformed_updates, expected_transformed_updates)
