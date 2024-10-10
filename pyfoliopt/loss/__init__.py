@@ -1,3 +1,3 @@
 """The loss functions sub-package."""
 
-from pyfoliopt.loss._loss import kelly_loss
+from pyfoliopt.loss._kelly_loss import kelly_loss
