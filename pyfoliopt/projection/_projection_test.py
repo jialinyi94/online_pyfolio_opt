@@ -24,3 +24,11 @@ def test_projection_onto_l1_ball():
     projected_pytree = projection_l1_ball(pytree, radius=radius)
     answer = jax.tree_map(lambda x: jnp.sum(jnp.abs(x)), projected_pytree)
     chex.assert_trees_all_close(answer, radius)
+
+
+def test_projection_onto_l1_ball_numeric():
+    point = jnp.array([2.0, -2.0])
+    radius = 1.0
+    projected_point = projection_l1_ball(point, radius=radius)
+    expected = jnp.array([0.5, -0.5])
+    chex.assert_trees_all_close(projected_point, expected)
