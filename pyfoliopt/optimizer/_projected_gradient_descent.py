@@ -15,19 +15,16 @@ def proj_gd(
         learning_rate = lr_schedule(state.count) if callable(lr_schedule) else lr_schedule
         new_state = optax.ScaleByScheduleState(count=state.count + 1)
         
-        # Gradient step
+        # Projected gradient step
         new_params = jax.tree.map(
-            lambda p, g: p - learning_rate * g,
+            lambda p, g: projection_fn(p - learning_rate * g),
             params,
             updates
         )
-        
-        # Projection step
-        new_params_proj = jax.tree.map(projection_fn, new_params)
 
         transformed_updates = jax.tree_map(
             lambda p_proj, p: p_proj - p, 
-            new_params_proj, params
+            new_params, params
         )
         
         return transformed_updates, new_state
