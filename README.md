@@ -1,5 +1,5 @@
-# online_pyfolio_opt
-Online porfolio optimization algorithms implemented in Python with Jax
+# POTATO
+PorfoliO opTimizATiOn with Google Deepmind's Jax
 
 ## Pin CUDA version
 
