@@ -1,5 +1,5 @@
-from pyfoliopt.optimizer import proj_gd
-from pyfoliopt.projection import projection_l1_ball
+from potato.optimizer import proj_gd
+from potato.projection import projection_l1_ball
 
 import jax
 import jax.numpy as jnp

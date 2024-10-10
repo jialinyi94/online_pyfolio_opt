@@ -2,7 +2,7 @@ import jax
 import jax.numpy as jnp
 import chex
 
-from pyfoliopt.projection import projection_l1_ball
+from potato.projection import projection_l1_ball
 
 
 def test_projection_onto_l1_ball():

@@ -2,7 +2,7 @@ import chex
 import jax
 import jax.numpy as jnp
 
-from pyfoliopt.benchmark import best_kelly_portfolio
+from potato.benchmark import best_kelly_portfolio
 import chex
 
 
