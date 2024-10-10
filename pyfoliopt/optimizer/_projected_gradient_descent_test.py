@@ -36,6 +36,36 @@ def test_proj_gd_basic():
     chex.assert_trees_all_close(transformed_updates, expected_transformed_updates)
 
 
+def test_proj_gd_l1_ball():
+    # Define a simple learning rate schedule
+    lr_schedule = 0.1
+
+    # Define a simple projection function (e.g., projection onto the L1 ball)
+    def projection_fn(x):
+        return projection_l1_ball(x, radius=1.0)
+
+    # Initialize the optimizer
+    optimizer = proj_gd(lr_schedule, projection_fn)
+    params = jnp.array([0.5, 1.5, -0.5])
+    state = optimizer.init(params)
+
+    # Define some dummy gradients
+    updates = jnp.array([0.1, -0.2, 0.3])
+
+    # Perform an update step
+    transformed_updates, new_state = optimizer.update(updates, state, params)
+
+    # Check the new state
+    assert new_state.count == 1
+
+    # Check the transformed updates
+    expected_params = params - lr_schedule * updates
+    expected_params_proj = projection_l1_ball(expected_params, radius=1.0)
+    expected_transformed_updates = expected_params_proj - expected_params
+
+    chex.assert_trees_all_close(transformed_updates, expected_transformed_updates)
+
+
 def test_proj_gd_pytree_inputs():
     # Define a simple learning rate schedule
     lr_schedule = 0.1
