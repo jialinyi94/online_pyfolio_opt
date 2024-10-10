@@ -27,7 +27,7 @@ def proj_gd(
 
         transformed_updates = jax.tree_map(
             lambda p_proj, p: p_proj - p, 
-            new_params_proj, new_params
+            new_params_proj, params
         )
         
         return transformed_updates, new_state

@@ -4,6 +4,7 @@ from pyfoliopt.projection import projection_l1_ball
 import jax
 import jax.numpy as jnp
 import chex
+import optax
 
 
 def test_proj_gd_basic():
@@ -31,9 +32,27 @@ def test_proj_gd_basic():
     # Check the transformed updates
     expected_params = params - lr_schedule * updates
     expected_params_proj = jnp.clip(expected_params, 0, 1)
-    expected_transformed_updates = expected_params_proj - expected_params
+    expected_transformed_updates = expected_params_proj - params
 
     chex.assert_trees_all_close(transformed_updates, expected_transformed_updates)
+
+
+def test_proj_gd_numeric():
+    def objective_fn(x):
+        return (x[0]+1)**2 + (x[1]-1)**2
+    
+    optimizer = proj_gd(1e-1, projection_fn=projection_l1_ball)
+    opt_state = optimizer.init(jnp.array([0.0, 0.0]))
+
+    params = jnp.array([0.0, 0.0])
+    loss_history = []
+    for _ in range(100):
+        loss, grad = jax.value_and_grad(objective_fn)(params)
+        updates, opt_state = optimizer.update(grad, opt_state, params)
+        params = optax.apply_updates(params, updates)
+        loss_history.append(loss)
+    
+    chex.assert_trees_all_close(params, jnp.array([-0.5, 0.5]))
 
 
 def test_proj_gd_l1_ball():
@@ -61,7 +80,7 @@ def test_proj_gd_l1_ball():
     # Check the transformed updates
     expected_params = params - lr_schedule * updates
     expected_params_proj = projection_l1_ball(expected_params, radius=1.0)
-    expected_transformed_updates = expected_params_proj - expected_params
+    expected_transformed_updates = expected_params_proj - params
 
     chex.assert_trees_all_close(transformed_updates, expected_transformed_updates)
 
@@ -91,6 +110,6 @@ def test_proj_gd_pytree_inputs():
     # Check the transformed updates
     expected_params = jax.tree.map(lambda p, g: p - lr_schedule * g, params, updates)
     expected_params_proj = jax.tree.map(lambda x: jnp.clip(x, 0, 1), expected_params)
-    expected_transformed_updates = jax.tree.map(lambda p_proj, p: p_proj - p, expected_params_proj, expected_params)
+    expected_transformed_updates = jax.tree.map(lambda p_proj, p: p_proj - p, expected_params_proj, params)
 
     chex.assert_trees_all_close(transformed_updates, expected_transformed_updates)
