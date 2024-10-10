@@ -25,21 +25,17 @@ def projection_l1_ball(pytree: Any, radius: chex.Scalar | Any = 1.0) -> Any:
     """
     
     def project_array(x, r):
-        # Handle the case where x is already inside the ball
-        if jnp.sum(jnp.abs(x)) <= r:
-            return x
-        
         # Sort |x| in descending order
-        sorted_abs_x = jnp.sort(jnp.abs(x.ravel()))[::-1]
+        sorted_abs_x = jnp.sort(jnp.abs(x))[::-1]
         
         # Compute the cumulative sum
         cumsum = jnp.cumsum(sorted_abs_x)
         
         # Find the number of elements to keep
-        k = jnp.sum(sorted_abs_x > (cumsum - r) / jnp.arange(1, len(x.ravel()) + 1))
+        k = jnp.sum(sorted_abs_x > (cumsum - r) / jnp.arange(1, len(x) + 1))
         
         # Compute the threshold
-        theta = (cumsum[k - 1] - r) / k
+        theta = jnp.where(k > 0, (cumsum[k - 1] - r) / k, 0.0)
         
         # Return the projected vector
         return jnp.sign(x) * jnp.maximum(jnp.abs(x) - theta, 0)
