@@ -36,4 +36,4 @@ def mirror_descent(
 
 def egd(learning_rate: optax._src.base.ScalarOrSchedule):
     """Exponentiated Gradient Descent"""
-    return mirror_descent(learning_rate, jnp.log, jax.nn.softmax)
+    return mirror_descent(learning_rate, lambda x: x, jax.nn.softmax)
